@@ -1,32 +1,93 @@
 package dao;
 
-import exceptions.WrongSentenceException;
-import models.Box;
+import java.io.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+public class Dao implements Loader, Saver {
 
-public class Dao {
+    private static final String COMMONLY_SENTENCES = "src/resources/commonlySentences.csv";
+    private static final String COMMONLY_SENTENCES_CHECKER = "src/resources/commonlySentencesChecker.csv";
+    private static final String GRAMMA_SENTENCES = "src/resources/grammaSentences.csv";
+    private static final String GRAMMA_SENTENCES_CHECKER = "src/resources/grammaSentencesChecker.csv";
+    private static final String IT_SENTENCES = "src/resources/itSentences.csv";
+    private static final String IT_SENTENCES_CHECKER = "src/resources/itSentencesChecker.csv";
 
-    public static void loadFile(String boxName ,String filePath) throws IOException, WrongSentenceException {
-        Box box = new Box(boxName);
-        FileReader fr = null;
-        String line = "";
+    private List<String> sentences;
+    private List<String> booleansForSentences;
+    private String typeSentences;
+    private String typeSentencesChecker;
 
-        try {
-            fr = new FileReader(filePath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            System.out.println("There is no file " + filePath);
-        }
-
-        BufferedReader bf = new BufferedReader(fr);
-
-        while ((line = bf.readLine()) != null) {
-            System.out.println(line);
-            box.addSentence(line);
-        }
+    public List<String> getSentences() {
+        return sentences;
     }
+
+    public List<String> getBooleansForSentences() {
+        return booleansForSentences;
+    }
+
+    public Dao(String typeSentences, String typeSentencesChecker) {
+        this.sentences = new LinkedList<>();
+        this.booleansForSentences = new LinkedList<>();
+        this.typeSentences = typeSentences;
+        this.typeSentencesChecker = typeSentencesChecker;
+    }
+
+    @Override
+    public void loadSentences() throws IOException {
+        FileReader fr1 = null;
+        FileReader fr2 = null;
+        String line1 = "";
+        String line2 = "";
+
+        fr1 = new FileReader(typeSentences);
+        fr2 = new FileReader(typeSentencesChecker);
+
+        BufferedReader bf1 = new BufferedReader(fr1);
+        BufferedReader bf2 = new BufferedReader(fr2);
+
+        while ((line1 = bf1.readLine()) != null && (line2 = bf2.readLine()) != null) {
+            sentences.add(line1);
+            booleansForSentences.add(line2);
+        }
+        bf1.close();
+        bf2.close();
+        fr1.close();
+        fr2.close();
+    }
+
+    @Override
+    public void saveSentences(List<String> newListSentences, List<String> newListSentencesChecker) throws FileNotFoundException {
+        PrintWriter writer1 = null;
+        PrintWriter writer2 = null;
+
+        writer1 = new PrintWriter(typeSentences);
+        writer2 = new PrintWriter(typeSentencesChecker);
+
+        for (int i = 0; i < newListSentences.size(); i++) {
+            writer1.println(newListSentences.get(i));
+            writer2.println(newListSentencesChecker.get(i));
+        }
+        writer1.close();
+        writer2.close();
+
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        Dao dao = new Dao(Dao.COMMONLY_SENTENCES,Dao.COMMONLY_SENTENCES_CHECKER);
+        dao.loadSentences();
+
+        dao.saveSentences(dao.sentences, dao.booleansForSentences);
+
+        Dao dao1 = new Dao(Dao.COMMONLY_SENTENCES,Dao.COMMONLY_SENTENCES_CHECKER);
+        dao1.loadSentences();
+
+        for (String i : dao1.sentences) {
+            System.out.println(i);
+        }
+
+    }
+
 }
