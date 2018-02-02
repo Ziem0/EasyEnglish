@@ -3,16 +3,15 @@ package dao;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Dao implements Loader, Saver {
 
-    private static final String COMMONLY_SENTENCES = "src/resources/commonlySentences.csv";
-    private static final String COMMONLY_SENTENCES_CHECKER = "src/resources/commonlySentencesChecker.csv";
-    private static final String GRAMMA_SENTENCES = "src/resources/grammaSentences.csv";
-    private static final String GRAMMA_SENTENCES_CHECKER = "src/resources/grammaSentencesChecker.csv";
-    private static final String IT_SENTENCES = "src/resources/itSentences.csv";
-    private static final String IT_SENTENCES_CHECKER = "src/resources/itSentencesChecker.csv";
+    public static final String COMMONLY_SENTENCES = "src/resources/commonlySentences.csv";
+    public static final String COMMONLY_SENTENCES_CHECKER = "src/resources/commonlySentencesChecker.csv";
+    public static final String GRAMMA_SENTENCES = "src/resources/grammaSentences.csv";
+    public static final String GRAMMA_SENTENCES_CHECKER = "src/resources/grammaSentencesChecker.csv";
+    public static final String IT_SENTENCES = "src/resources/itSentences.csv";
+    public static final String IT_SENTENCES_CHECKER = "src/resources/itSentencesChecker.csv";
 
     private List<String> sentences;
     private List<String> booleansForSentences;
@@ -73,21 +72,4 @@ public class Dao implements Loader, Saver {
         writer2.close();
 
     }
-
-
-    public static void main(String[] args) throws IOException {
-        Dao dao = new Dao(Dao.COMMONLY_SENTENCES,Dao.COMMONLY_SENTENCES_CHECKER);
-        dao.loadSentences();
-
-        dao.saveSentences(dao.sentences, dao.booleansForSentences);
-
-        Dao dao1 = new Dao(Dao.COMMONLY_SENTENCES,Dao.COMMONLY_SENTENCES_CHECKER);
-        dao1.loadSentences();
-
-        for (String i : dao1.sentences) {
-            System.out.println(i);
-        }
-
-    }
-
 }

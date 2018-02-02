@@ -4,5 +4,5 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface Saver {
-    void saveSentences(List<String> newListSentencesChecker, List<String> newListSentences) throws FileNotFoundException;
+    void saveSentences(List<String> newListSentences, List<String> newListSentencesChecker) throws FileNotFoundException;
 }
