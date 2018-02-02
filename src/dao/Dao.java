@@ -1,5 +1,6 @@
 package dao;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Dao implements Loader, Saver {
     public static final String GRAMMA_SENTENCES_CHECKER = "src/resources/grammaSentencesChecker.csv";
     public static final String IT_SENTENCES = "src/resources/itSentences.csv";
     public static final String IT_SENTENCES_CHECKER = "src/resources/itSentencesChecker.csv";
+    public static final String GRAMMA = "src/resources/gramma.csv";
 
     private List<String> sentences;
     private List<String> booleansForSentences;
@@ -70,6 +72,26 @@ public class Dao implements Loader, Saver {
         }
         writer1.close();
         writer2.close();
+    }
 
+    public static void loadGramma() throws IOException {
+        String line = "";
+        FileReader fr = null;
+        fr = new FileReader(GRAMMA);
+
+        BufferedReader br = new BufferedReader(fr);
+
+        while ((line = br.readLine()) != null) {
+
+            if (!line.isEmpty() && line.contains("@")) {
+                JOptionPane.showMessageDialog(null, line);
+                System.out.print("\033[H\033[2J\n\n");
+                System.out.flush();
+            } else {
+                System.out.println(line);
+            }
+        }
+        br.close();
+        fr.close();
     }
 }

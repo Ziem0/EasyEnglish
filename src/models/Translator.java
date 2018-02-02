@@ -8,12 +8,12 @@ import java.util.*;
 /**
  * created by Ziemo Andrzejewski on 01/02/2018
  */
-public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFunctions {
+public class Translator implements SentenceRegistry, TranslatorFunctions {
     private static int idx = 1;
     private List<Sentence> glossary;
     private List<Translator.Sentence> lastXSentences;
-    static final Comparator<Sentence> RANDOM_ORDER;
-    static final Comparator<Sentence> NUMBER_INCREASE_ORDER;
+    private static final Comparator<Sentence> RANDOM_ORDER;
+    private static final Comparator<Sentence> NUMBER_INCREASE_ORDER;
 
     static{
         RANDOM_ORDER = new Comparator<Sentence>() {
