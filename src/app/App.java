@@ -1,5 +1,6 @@
 package app;
 
+import controllers.TranslatorController;
 import dao.Dao;
 import models.Translator;
 
@@ -12,13 +13,15 @@ public class App {
         dao.loadSentences();
 
         Translator translator = new Translator(dao.getSentences(), dao.getBooleansForSentences());
+        TranslatorController controller = new TranslatorController(translator, dao);
+
+
+
+
 //        translator.addNewSentence("This is saver1", "To jest zapisywacz1");
-        translator.removeSentence(214);
-        translator.printGlossary();
+//        translator.removeSentence(214);
+//        translator.printGlossary(translator.getGlossary());
 //        translator.saveSentencesToFile(dao);
 
-
-        //SentenceRegistry
-        //SentenceSaver
     }
 }

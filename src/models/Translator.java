@@ -1,41 +1,63 @@
 package models;
 
 import dao.Saver;
+
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * created by Ziemo Andrzejewski on 01/02/2018
  */
-public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFunctions{
-    static final Comparator<Sentence> NUMBER_DECREASE_ORDER;
-
-    static {NUMBER_DECREASE_ORDER = new Comparator<Sentence>() {
-        @Override
-        public int compare(Sentence sentence1, Sentence sentence2) {
-            if (sentence1.number > sentence2.number) {
-                return 1;
-            } else if (sentence1.number < sentence2.number) {
-                return -1;
-            }
-            return 0;
-        }
-    };}
-
+public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFunctions {
     private static int idx = 1;
     private List<Sentence> glossary;
+    private List<Translator.Sentence> lastXSentences;
+    static final Comparator<Sentence> RANDOM_ORDER;
+    static final Comparator<Sentence> NUMBER_INCREASE_ORDER;
 
-    public List<Sentence> getGlossary() {
-        return glossary;
+    static{
+        RANDOM_ORDER = new Comparator<Sentence>() {
+            @Override
+            public int compare(Sentence o1, Sentence o2) {
+                Random random = new Random();
+                if (o1.number > o2.number) {
+                    return random.nextInt(2)-1;
+                } else if (o1.number < o2.number) {
+                    return random.nextInt(2)-1;
+                }
+                return random.nextInt(2)-1;
+            }
+    };}
+
+    static {
+        NUMBER_INCREASE_ORDER = new Comparator<Sentence>() {
+            @Override
+            public int compare(Sentence sentence1, Sentence sentence2) {
+                if (sentence1.number > sentence2.number) {
+                    return 1;
+                } else if (sentence1.number < sentence2.number) {
+                    return -1;
+                }
+                return 0;
+            }
+        };
     }
 
     public Translator(List<String> typeSentences, List<String> typeSentencesChecker) {
         idx = 1;
         this.glossary = new LinkedList<>();
+        this.lastXSentences = new LinkedList<>();
         addSentencesToTranslator(typeSentences, typeSentencesChecker);
+    }
+
+    @Override
+    public List<Sentence> getGlossary() {
+        return glossary;
+    }
+
+    @Override
+    public List<Sentence> getLastXSentences() {
+        return lastXSentences;
     }
 
     @Override
@@ -43,17 +65,65 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
         for (int i = 0; i < typeSentences.size(); i++) {
             glossary.add(new Sentence(typeSentences.get(i), typeSentencesChecker.get(i)));
         }
+        System.out.println("Program added " + typeSentences.size() + " sentences!");
+    }
+
+    @Override
+    public void addNewSentence(String newSentenceEng, String newSentencePol) {
+        String newSentence = String.join(",", newSentenceEng, newSentencePol);
+        glossary.add(new Sentence(newSentence, "false"));
+        //add exceptions for ','
     }
 
     @Override
     public void removeSentence(int number) {
-        int foundSentence = Collections.binarySearch(glossary, new Sentence(number), NUMBER_DECREASE_ORDER);
+        int foundSentence = Collections.binarySearch(glossary, new Sentence(number), NUMBER_INCREASE_ORDER);
         if (foundSentence >= 0) {
             glossary.remove(foundSentence);
             System.out.println("Sentence was removed!");
         } else {
-            System.out.println("There is no sentence with no."+number);
+            System.out.println("There is no sentence no." + number);
         }
+    }
+
+    @Override
+    public void repeatLastXSentences(int x) {
+        this.lastXSentences = null;
+        int start = glossary.size() - x;
+        lastXSentences = glossary.subList(start, glossary.size());
+    }
+
+    private boolean isAllSentencesLearned() {
+        for (Sentence sentence : glossary) {
+            if (!sentence.isDone) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void changeAllSentencesIsDone() {
+        if (isAllSentencesLearned()) {
+            for (Sentence sentence : glossary) {
+                sentence.isDone = false;
+            }
+        }
+    }
+
+    @Override
+    public void runTranslator(List list) {
+
+    }
+
+    @Override
+    public void randomListSorting() {
+        Collections.sort(glossary,RANDOM_ORDER);
+    }
+
+    @Override
+    public void standardListSorting() {
+        Collections.sort(glossary, NUMBER_INCREASE_ORDER);
     }
 
     @Override
@@ -70,24 +140,22 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
             newListSentencesChecker.add(String.valueOf(isDoneSentence));
         }
         saver.saveSentences(newListSentences, newListSentencesChecker);
+        System.out.println("File was successfully updated and saved!");
     }
 
     @Override
-    public void addNewSentence(String newSentenceEng, String newSentencePol)  {
-        String newSentence = String.join(",", newSentenceEng, newSentencePol);
-        glossary.add(new Sentence(newSentence, "false"));
-        //add exceptions for ','
-    }
-
-    //test
     public void printGlossary() {
-        Collections.sort(glossary);
+        Collections.sort(glossary, NUMBER_INCREASE_ORDER);
         for (Sentence i : glossary) {
-            System.out.println(i.number + i.eng + i.pol);
+            System.out.println(i.number + " --> " + i.eng + "\n\t" + i.pol + "\n");
         }
     }
 
-    private class Sentence  implements Comparable<Sentence> {
+
+
+
+
+    public static class Sentence implements Comparable<Sentence> {
         private boolean isDone;
         private String eng;
         private String pol;
@@ -110,7 +178,7 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
             this.number = number;
         }
 
-        public boolean isDone() {
+        public boolean getIsDone() {
             return isDone;
         }
 
@@ -126,7 +194,11 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
             return number;
         }
 
-        //increase sorting
+        public void isDoneTrue() {
+            this.isDone = true;
+        }
+
+        //decrease sorting
         @Override
         public int compareTo(Sentence sentence) {
             if (this.number > sentence.number) {

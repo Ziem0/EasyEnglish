@@ -1,9 +1,24 @@
 package models;
 
-public interface TranslatorFunctions {
+import dao.Saver;
+
+import java.io.FileNotFoundException;
+import java.util.List;
+
+public interface TranslatorFunctions{
     void addNewSentence(String newSentence, String newSentencePol);
     void removeSentence(int number);
+    void repeatLastXSentences(int x);
+    void randomListSorting();
+    void standardListSorting();
+    void changeAllSentencesIsDone();
+    void printGlossary();
+    void runTranslator(List<Translator.Sentence> list);
+    List<Translator.Sentence> getLastXSentences();
+    void saveSentencesToFile(Saver saver) throws FileNotFoundException;
+    List<Translator.Sentence> getGlossary();
+    }
 
-    //repeatLast
-    //repeatUnchecked(random)
-}
+
+
+
