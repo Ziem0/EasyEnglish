@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFunctions{
     static final Comparator<Sentence> NUMBER_DECREASE_ORDER;
-    //decrease sorting
+
     static {NUMBER_DECREASE_ORDER = new Comparator<Sentence>() {
         @Override
         public int compare(Sentence sentence1, Sentence sentence2) {
             if (sentence1.number > sentence2.number) {
-                return -1;
-            } else if (sentence1.number < sentence2.number) {
                 return 1;
+            } else if (sentence1.number < sentence2.number) {
+                return -1;
             }
             return 0;
         }
@@ -46,6 +46,17 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
     }
 
     @Override
+    public void removeSentence(int number) {
+        int foundSentence = Collections.binarySearch(glossary, new Sentence(number), NUMBER_DECREASE_ORDER);
+        if (foundSentence >= 0) {
+            glossary.remove(foundSentence);
+            System.out.println("Sentence was removed!");
+        } else {
+            System.out.println("There is no sentence with no."+number);
+        }
+    }
+
+    @Override
     public void saveSentencesToFile(Saver saver) throws FileNotFoundException {
         LinkedList<String> newListSentences = new LinkedList<>();
         LinkedList<String> newListSentencesChecker = new LinkedList<>();
@@ -62,7 +73,7 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
     }
 
     @Override
-    public void addNewSentence(String newSentenceEng, String newSentencePol) {
+    public void addNewSentence(String newSentenceEng, String newSentencePol)  {
         String newSentence = String.join(",", newSentenceEng, newSentencePol);
         glossary.add(new Sentence(newSentence, "false"));
         //add exceptions for ','
@@ -70,13 +81,13 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
 
     //test
     public void printGlossary() {
-        Collections.sort(glossary);//, NUMBER_DECREASE_ORDER);
+        Collections.sort(glossary);
         for (Sentence i : glossary) {
             System.out.println(i.number + i.eng + i.pol);
         }
     }
 
-    private class Sentence implements Comparable<Sentence> {
+    private class Sentence  implements Comparable<Sentence> {
         private boolean isDone;
         private String eng;
         private String pol;
@@ -95,6 +106,10 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
             Translator.idx++;
         }
 
+        public Sentence(int number) {
+            this.number = number;
+        }
+
         public boolean isDone() {
             return isDone;
         }
@@ -111,17 +126,16 @@ public class Translator implements SentenceRegistry, SentenceSaver, TranslatorFu
             return number;
         }
 
+        //increase sorting
         @Override
         public int compareTo(Sentence sentence) {
             if (this.number > sentence.number) {
-                return 1;
-            } else if (this.number < sentence.number) {
                 return -1;
+            } else if (this.number < sentence.number) {
+                return 1;
             }
             return 0;
         }
     }
-
-
 }
 

@@ -12,9 +12,11 @@ public class App {
         dao.loadSentences();
 
         Translator translator = new Translator(dao.getSentences(), dao.getBooleansForSentences());
-        translator.addNewSentence("This is saver23", "To jest zapisywacz23");
+//        translator.addNewSentence("This is saver1", "To jest zapisywacz1");
+        translator.removeSentence(214);
         translator.printGlossary();
-        translator.saveSentencesToFile(dao);
+//        translator.saveSentencesToFile(dao);
+
 
         //SentenceRegistry
         //SentenceSaver
