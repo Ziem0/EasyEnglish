@@ -76,16 +76,19 @@ public class TranslatorController {
         }
     }
     private void runTranslatorUnchecked(List<Translator.Sentence> list) {
+        int counter = 0;
         for (Translator.Sentence sentence : list) {
             if (!sentence.getIsDone()) {
                 JOptionPane.showMessageDialog(null, sentence.getPol());
                 System.out.println(Command.ENTER_CONTINUE);
                 JOptionPane.showMessageDialog(null, sentence.getEng());
                 sentence.isDoneTrue();
+                System.out.println(counter);
                 String choice = JOptionPane.showInputDialog("Q to quit, " + Command.ENTER_CONTINUE);
                 if (choice.matches("[qQ]{1}")) {
                     break;
                 }
+                counter++;
             }
         }
     }

@@ -5,7 +5,7 @@ import dao.Saver;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-/**
+/**dsd
  * created by Ziemo Andrzejewski on 01/02/2018
  */
 public class Translator implements SentenceRegistry, TranslatorFunctions {
