@@ -13,7 +13,6 @@ public interface TranslatorFunctions{
     void standardListSorting();
     void changeAllSentencesIsDone();
     void printGlossary();
-    void runTranslator(List<Translator.Sentence> list);
     List<Translator.Sentence> getLastXSentences();
     void saveSentencesToFile(Saver saver) throws FileNotFoundException;
     List<Translator.Sentence> getGlossary();

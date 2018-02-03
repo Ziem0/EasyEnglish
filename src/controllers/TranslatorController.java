@@ -55,12 +55,16 @@ public class TranslatorController {
                     translator.standardListSorting();
                     translator.saveSentencesToFile(dao);
                     break;
+                //for test
+                case "5":
+                    for (Translator.Sentence i : translator.getGlossary()) {
+                        System.out.println(i.getIsDone());
+                    }
             }
         }
     }
 
     private void runTranslator(List<Translator.Sentence> list) {
-        boolean quitTranslator = false;
         for (Translator.Sentence sentence : list) {
             JOptionPane.showMessageDialog(null, sentence.getPol());
             System.out.println(Command.ENTER_CONTINUE);

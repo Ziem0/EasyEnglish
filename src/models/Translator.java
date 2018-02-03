@@ -72,7 +72,6 @@ public class Translator implements SentenceRegistry, TranslatorFunctions {
     public void addNewSentence(String newSentenceEng, String newSentencePol) {
         String newSentence = String.join(",", newSentenceEng, newSentencePol);
         glossary.add(new Sentence(newSentence, "false"));
-        //add exceptions for ','
     }
 
     @Override
@@ -112,13 +111,8 @@ public class Translator implements SentenceRegistry, TranslatorFunctions {
     }
 
     @Override
-    public void runTranslator(List list) {
-
-    }
-
-    @Override
     public void randomListSorting() {
-        Collections.sort(glossary,RANDOM_ORDER);
+        Collections.shuffle(glossary);
     }
 
     @Override
